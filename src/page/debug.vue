@@ -224,11 +224,9 @@ export default {
     border: 1px solid #f2f2f2
     .search-box {
       margin: 0 20px;
-      height: 74px;
-      border-bottom 1px solid #f2f2f2
       .search-input {
-        width 275px
-        margin-top: 17px;
+        width 17.1875rem
+        margin-top: 1.0625rem
       }
       .date-picker-box {
         display inline
@@ -240,12 +238,13 @@ export default {
         margin-left: 33px;
       }
       .add-btn {
-        margin-left 633px
         color: #348fdf;
       }
     }
     .table-box {
-      margin-top 32px
+      margin-top 20px
+      border-top 1px solid #f2f2f2
+      padding-top 30px
     }
     .label {
       font-size 16px

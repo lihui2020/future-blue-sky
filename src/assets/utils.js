@@ -1,8 +1,11 @@
 /**
  * Created by apple on 2018/10/20.
  */
+// const baseUrl = 'http://zl.senseitgroup.com/app/'
+const baseUrl = 'http://digitalsnail.vicp.net/boiler/'
 import { Loading } from 'element-ui'
 import axios from 'axios'
+import qs from 'qs'
 
 var loader = null
 const showLoading = function (options) {
@@ -32,11 +35,11 @@ export const ajax = ((opt) => {
       // `params` 是即将与请求一起发送的 URL 参数
       params: (opts.type === "get") ? opts.data : {},
       // `data` 是作为请求主体被发送的数据
-      data: (opts.type === "post") ? opts.data : {},
+      data: (opts.type === "post") ? qs.stringify(opts.data) : {},
       headers: opts.headers || {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json'
       },
-      baseURL: opts.mock ? '' : 'http://localhost:8080/mock',
+      // baseURL: opts.mock ? '' : baseUrl,
       // `transformRequest` 允许在向服务器发送前，修改请求数据(请求前处理)
       transformRequest: [function (data) {
         // 对 data 进行任意转换处理
@@ -52,7 +55,7 @@ export const ajax = ((opt) => {
       responseType: opts.dataType || 'json'
     }).then(function (res) {
       hideLoading()
-      // console.log(res);
+      console.log(res);
       if (res.status == 200) {
         if (opts.success) {
           opts.success(res.data, res);

@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/fbs': {
+        target: 'http://digitalsnail.vicp.net/',
+        host: 'digitalsnail.vicp.net',
+        pathRewrite: { "^/fbs": "" },
+        secure: false,
+        changeOrigin: true
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
