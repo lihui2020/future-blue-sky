@@ -1,11 +1,11 @@
 /**
  * Created by apple on 2018/10/20.
  */
-// const baseUrl = 'http://zl.senseitgroup.com/app/'
-const baseUrl = 'http://digitalsnail.vicp.net/boiler/'
+const baseUrl = process.env.API_ROOT;
 import { Loading } from 'element-ui'
 import axios from 'axios'
-import qs from 'qs'
+import { store, getLogin } from './js/local.storage'
+import router from '@/router/index'
 
 var loader = null
 const showLoading = function (options) {
@@ -17,6 +17,43 @@ const showLoading = function (options) {
 const hideLoading = function () {
   loader && loader.close();
 }
+
+// axios 配置
+axios.defaults.timeout = 5000
+axios.defaults.baseURL = baseUrl
+
+// http request 拦截器
+axios.interceptors.request.use(
+  config => {
+    if (router.currentRoute.path !== 'login' && getLogin().access_token) {
+      config.headers.Authorization = `Bearer ${getLogin().access_token}`
+    }
+    return config
+  },
+  err => {
+    return Promise.reject(err)
+  },
+)
+
+// http response 拦截器
+axios.interceptors.response.use(
+  response => {
+    return response
+  },
+  error => {
+    if (error.response) {
+      if (error.response.status === 401) {
+        store.remove('login_token')
+        router.currentRoute.path !== 'login' &&
+        router.replace({
+          path: '/login',
+          query: { redirect: router.currentRoute.path },
+        })
+      }
+    }
+    return Promise.reject(error.response.data)
+  },
+)
 
 export const ajax = ((opt) => {
   return (opt) => {
@@ -35,7 +72,7 @@ export const ajax = ((opt) => {
       // `params` 是即将与请求一起发送的 URL 参数
       params: (opts.type === "get") ? opts.data : {},
       // `data` 是作为请求主体被发送的数据
-      data: (opts.type === "post") ? qs.stringify(opts.data) : {},
+      data: (opts.type === "post") ? JSON.stringify(opts.data) : {},
       headers: opts.headers || {
         'Content-Type': 'application/json'
       },
@@ -55,10 +92,14 @@ export const ajax = ((opt) => {
       responseType: opts.dataType || 'json'
     }).then(function (res) {
       hideLoading()
-      console.log(res);
+      // console.log(res);
       if (res.status == 200) {
         if (opts.success) {
-          opts.success(res.data, res);
+          let tempData = res.data
+          if (typeof tempData === 'string'){
+            tempData = JSON.parse(tempData)
+          }
+          opts.success(tempData, res);
         }
       } else {
         alert(res.data.error);
@@ -71,7 +112,7 @@ export const ajax = ((opt) => {
         opts.error(error);
       } else {
         //在设置触发错误的请求时发生了错误
-        alert('出错了');
+        // alert('出错了');
       }
       console.log(error.config);
     });

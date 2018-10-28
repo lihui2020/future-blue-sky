@@ -123,6 +123,7 @@
 <script>
 import NavBar from '../components/nav-bar.vue'
 import { findIndex } from 'lodash'
+import { ajax } from '@/assets/utils'
 import { getDebugTableData, saveDebugInfo } from '../service'
 
 export default {
@@ -207,8 +208,19 @@ export default {
       this.handleSearch()
     },
     getData () {
-      getDebugTableData.call(this, this.searchCons, () => {
-        console.log('--getData success--')
+//      getDebugTableData.call(this, this.searchCons, () => {
+//        console.log('&#45;&#45;getData success&#45;&#45;')
+//      })
+      ajax({
+        url: 'api/web/v1/equipments/operation',
+        type: 'post',
+        data:{
+          action: "index",
+          currentpage: 1
+        },
+        success: (data) => {
+          console.log(data)
+        }
       })
     }
   },

@@ -14,7 +14,7 @@ module.exports = {
       '/fbs': {
         target: 'http://digitalsnail.vicp.net/',
         host: 'digitalsnail.vicp.net',
-        pathRewrite: { "^/fbs": "" },
+        pathRewrite: { "^/fbs": "/boiler" },
         secure: false,
         changeOrigin: true
       }
